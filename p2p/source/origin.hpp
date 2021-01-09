@@ -28,7 +28,7 @@
 
 #include "cache.hpp"
 #include "dns.hpp"
-#include "http.hpp"
+#include "fetch.hpp"
 #include "link.hpp"
 #include "reader.hpp"
 #include "sewer.hpp"

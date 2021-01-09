@@ -20,28 +20,26 @@
 /* }}} */
 
 
-#include <boost/beast/http.hpp>
+#ifndef ORCHID_FETCH_HPP
+#define ORCHID_FETCH_HPP
 
-#include "baton.hpp"
-#include "http.hpp"
+#include <functional>
+#include <list>
+#include <map>
+#include <string>
+
+#include <rtc_base/openssl_certificate.h>
+
+#include "response.hpp"
+#include "task.hpp"
 
 namespace orc {
 
-template <typename Stream_>
-task<Response> Fetch_(Stream_ &stream, const http::request<http::string_body> &req) { orc_ahead
-    orc_block({ (void) co_await http::async_write(stream, req, orc::Adapt()); },
-        "writing http request");
+struct Locator;
+class Origin;
 
-    // this buffer must be maintained if this socket object is ever reused
-    boost::beast::flat_buffer buffer;
-    http::response<http::dynamic_body> res;
-    orc_block({ (void) co_await http::async_read(stream, buffer, res, orc::Adapt()); },
-        "reading http response");
-
-    // XXX: I can probably return this as a buffer array
-    Response response(res.result(), req.version());;
-    response.body() = boost::beast::buffers_to_string(res.body().data());
-    co_return response;
-}
+task<Response> Fetch(Origin &origin, const std::string &method, const Locator &locator, const std::map<std::string, std::string> &headers, const std::string &data, const std::function<bool (const std::list<const rtc::OpenSSLCertificate> &)> &verify = nullptr);
 
 }
+
+#endif//ORCHID_FETCH_HPP

@@ -20,28 +20,23 @@
 /* }}} */
 
 
-#include <boost/beast/http.hpp>
+#ifndef ORCHID_CONFIGURATION_HPP
+#define ORCHID_CONFIGURATION_HPP
 
-#include "baton.hpp"
-#include "http.hpp"
+#include <string>
+#include <vector>
+
+#include "rtc_base/rtc_certificate.h"
 
 namespace orc {
 
-template <typename Stream_>
-task<Response> Fetch_(Stream_ &stream, const http::request<http::string_body> &req) { orc_ahead
-    orc_block({ (void) co_await http::async_write(stream, req, orc::Adapt()); },
-        "writing http request");
+struct Configuration final {
+    rtc::scoped_refptr<rtc::RTCCertificate> tls_;
+    std::vector<std::string> ice_;
+};
 
-    // this buffer must be maintained if this socket object is ever reused
-    boost::beast::flat_buffer buffer;
-    http::response<http::dynamic_body> res;
-    orc_block({ (void) co_await http::async_read(stream, buffer, res, orc::Adapt()); },
-        "reading http response");
-
-    // XXX: I can probably return this as a buffer array
-    Response response(res.result(), req.version());;
-    response.body() = boost::beast::buffers_to_string(res.body().data());
-    co_return response;
-}
+rtc::scoped_refptr<rtc::RTCCertificate> Certify();
 
 }
+
+#endif//ORCHID_CONFIGURATION_HPP

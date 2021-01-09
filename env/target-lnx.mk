@@ -54,7 +54,7 @@ $(each)
 cc := clang$(suffix)
 cxx := clang++$(suffix)
 
-cxx += -stdlib=libc++
+include $(pwd)/target-cxx.mk
 
 tidy := $(shell which clang-tidy 2>/dev/null)
 ifeq ($(tidy)$(filter notidy,$(debug)),)
@@ -107,4 +107,4 @@ endif
 lflags += -ldl
 lflags += -pthread
 
-default := x86_64
+default := $(shell uname -m)
