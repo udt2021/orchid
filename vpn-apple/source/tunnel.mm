@@ -44,13 +44,13 @@ catch (const std::exception &error) { \
     orc_insist(false); \
 }
 
-static std::string cfs(NSData *data) {
+static inline std::string cfs(NSData *data) {
     if (data != nil)
         return {static_cast<const char *>([data bytes]), [data length]};
     else return {};
 }
 
-static std::string cfs(NSString *data) {
+static inline std::string cfs(NSString *data) {
     if (data != nil)
         return [data UTF8String];
     else return {};
