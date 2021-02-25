@@ -23,21 +23,15 @@
 #ifndef ORCHID_HTTP_HPP
 #define ORCHID_HTTP_HPP
 
-#include <list>
-#include <map>
-#include <string>
-
-#include <rtc_base/openssl_certificate.h>
+#include <boost/beast/core.hpp>
 
 #include "response.hpp"
 #include "task.hpp"
 
 namespace orc {
 
-struct Locator;
-class Origin;
-
-task<Response> Fetch(Origin &origin, const std::string &method, const Locator &locator, const std::map<std::string, std::string> &headers, const std::string &data, const std::function<bool (const std::list<const rtc::OpenSSLCertificate> &)> &verify = nullptr);
+template <typename Stream_>
+task<Response> Fetch_(Stream_ &stream, const http::request<http::string_body> &req);
 
 }
 

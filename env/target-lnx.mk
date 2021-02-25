@@ -113,3 +113,5 @@ endif
 
 lflags += -ldl
 lflags += -pthread
+
+default := $(shell uname -m)
